@@ -1,0 +1,82 @@
+{
+  "port": 8000,
+  "protocol": "http",
+  "defaultResponse": {
+    "statusCode": 400,
+    "headers": {
+      "Connection": "Keep-Alive",
+      "Content-Length": 0
+    }
+  },
+  "stubs": [
+    {
+      "name": "get token",
+      "predicates": [
+        { "equals": { "method": "GET" } },
+        { "equals": { "path": "/get-token" } }
+      ],
+      "responses": [
+        {
+          "is": {
+            "statusCode": 200,
+            "headers": { "Content-Type": "application/json" },
+            "body": {
+              "message": "Hello"
+            }
+          },
+          "behaviors": [
+            {
+              "decorate": "<%- stringify(filename, 'getToken.js') %>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "multiple return format",
+      "predicates": [
+        { "equals": { "method": "POST" } },
+        {
+          "equals": {
+            "path": "/multiple-return-format"
+          }
+        },
+        {
+          "inject": "<%- stringify(filename, 'filterToken.js') %>"
+        }
+      ],
+      "responses": [
+        {
+          "is": {
+            "statusCode": 200,
+            "headers": { "Content-Type": "application/json" },
+            "body": {
+              "message": "success"
+            }
+          },
+          "behaviors": [
+            {
+                "decorate": "<%- stringify(filename, 'selectResponse.js') %>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "get tokens",
+      "predicates": [
+        { "equals": { "method": "GET" } },
+        {
+          "equals": {
+            "path": "/list-tokens"
+          }
+        }
+      ],
+      "responses": [
+        {
+          "inject": "<%- stringify(filename, 'listTokens.js') %>"
+        }
+      ]
+    }
+  ]
+}
